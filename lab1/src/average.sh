@@ -1,9 +1,9 @@
 #!/bin/bash
-s=0
+count=0
 for param in "$@"
 do
-s=$(( $s + $param ))
+count=$(( $count + $param ))
 done
 echo "Количество чисел - $#"
-echo "Сумма чисел - $s"
-echo "Среднее арифметическое - $(( $s / $# ))"
+echo "Сумма чисел - $count"
+echo "Среднее арифметическое - $(( $count / $# ))"
