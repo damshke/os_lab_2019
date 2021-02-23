@@ -1,4 +1,4 @@
-  #!/bin/bash
+#!/bin/bash
 s=0
 for param in "$@"
 do
