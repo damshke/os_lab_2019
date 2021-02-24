@@ -3,7 +3,7 @@
 
 void RevertString(char *str)
 {
-	int i, j, l;
+    int i, j, l;
     char t;
     l = strlen(str);
     i = 0;
