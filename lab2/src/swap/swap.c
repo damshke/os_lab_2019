@@ -2,7 +2,7 @@
 
 void Swap(char *left, char *right)
 {
-	char tmp;
+    char tmp;
     tmp = *left;
     *left = *right;
     *right = tmp;
