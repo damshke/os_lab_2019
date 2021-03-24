@@ -6,7 +6,15 @@ struct MinMax GetMinMax(int *array, unsigned int begin, unsigned int end) {
   struct MinMax min_max;
   min_max.min = INT_MAX;
   min_max.max = INT_MIN;
-
-  // your code here
-  return min_max;
+  
+  for (int i = begin; i < end; i++){ // цикл поиска
+    if (*(array + i) > min_max.max){   // для максимального элемента
+        min_max.max = *(array+i);
+        }
+    if (*(array + i) < min_max.min){ // для минимального элемента
+        min_max.min = *(array + i);
+        }
+    }
+    
+  return min_max; // возвращение максимального и минимального элементов
 }
