@@ -5,20 +5,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
- 
+#include <signal.h>
+
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
- 
+
 #include <getopt.h>
- 
+
 #include "find_min_max.h"
 #include "utils.h"
+// lab 4
+
+void killer(int sig) // функция для убийства дочерних процессов
+{
+    kill(0, SIGKILL);
+    printf("timeout\n\n");
+}
  
 int main(int argc, char **argv) {
   int seed = -1;
   int array_size = -1;
   int pnum = -1;
+  int timeout = -1;
   bool with_files = false;
  
   while (true) {
@@ -28,6 +37,7 @@ int main(int argc, char **argv) {
                                       {"array_size", required_argument, 0, 0},
                                       {"pnum", required_argument, 0, 0},
                                       {"by_files", no_argument, 0, 'f'},
+                                      {"timeout", required_argument, 0, 0},
                                       {0, 0, 0, 0}};
  
     int option_index = 0;
@@ -61,6 +71,14 @@ int main(int argc, char **argv) {
             break;
           case 3:
             with_files = true;
+            break;
+          case 4: // для lab 4
+            timeout = atoi(optarg);
+            if (timeout <= 0) { 
+                printf("timeout is a positive number\n");
+                return 1;
+            }
+            printf("Timeout = %d\n", timeout);
             break;
  
           defalut:
@@ -119,7 +137,7 @@ int main(int argc, char **argv) {
   struct timeval start_time; // время начала
   gettimeofday(&start_time, NULL);
  
-  // подключаем многопотомность
+  // подключаем многопоточность
  
   for (int i = 0; i < pnum; i++) {
  
@@ -176,6 +194,17 @@ int main(int argc, char **argv) {
       fclose(file);
       file = fopen("file.txt", "r");
   }
+
+  // lab_4
+  printf("Timeout now: %d\n", timeout);   // выводит время перед началом таймаута
+
+  if (timeout > 0)
+  {
+    signal(SIGALRM, killer);
+    alarm(timeout);
+    printf("Timeout is %d \n", timeout);
+    sleep(3);                        
+  }
  
   while (active_child_processes > 0) {
     // your code here
@@ -201,6 +230,8 @@ int main(int argc, char **argv) {
       read(pipe_array[i][0], &max, sizeof(int));
  
       close(pipe_array[i][0]);
+
+      free(pipe_array[i]);
       
     }
  
